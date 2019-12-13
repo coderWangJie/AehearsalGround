@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.zhongsm.commlib.R;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     /**
@@ -21,7 +23,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(getLayoutResource());
+        // 设置页面
+        setContentView(getLayoutResource() > 0 ? getLayoutResource() : R.layout.layout_activity_not_set);
 
         runOnCreate();
     }

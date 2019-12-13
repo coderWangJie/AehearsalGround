@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">基础库</string>
+
+    <string name="layout_resource_not_set">抱歉，您还未设置页面资源！</string>
+</resources>
