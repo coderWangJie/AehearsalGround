@@ -2,4 +2,10 @@
     <string name="app_name">CommLib</string>
 
     <string name="layout_resource_not_set">"Sorry, You heven't setted layout! "</string>
+    <string name="hint_double_click_to_quit">Double Click BACK Quickly to quit!</string>
+    <string name="wx_err_auth_denied">wx_err_auth_denied</string>
+    <string name="wx_err_ok">wx_err_ok</string>
+    <string name="wx_err_unknown">wx_err_unknown</string>
+    <string name="wx_err_user_cancel">wx_err_user_cancel</string>
+    <string name="wx_err_unsupport">wx_err_unsupport</string>
 </resources>

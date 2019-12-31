@@ -1,15 +1,17 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion BUILD_TOOL_VERSION
 
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
+
+        flavorDimensions "default"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -22,10 +24,33 @@ android {
         }
     }
 
+    productFlavors {
+        dev {
+
+        }
+
+        pro {
+
+        }
+        productFlavors.all {
+            buildConfigField("String", "WX_APP_ID", "\"${wx_APP_ID}\"")
+            buildConfigField("String", "WX_APP_SECRECT", "\"${wx_APP_Secret}\"")
+        }
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
+    // OkHttp
+    api 'com.squareup.okhttp3:okhttp:4.2.1'
+    // EventBus
+    api 'org.greenrobot:eventbus:3.1.1'
+    // Apache Commons Codec
+    api 'commons-codec:commons-codec:1.13'
+    // 微信SDK
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
+//    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'   // 此写法不推荐
 }
