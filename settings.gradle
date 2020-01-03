@@ -1,2 +1,2 @@
-include ':app', ':commlib'
+include ':app', ':commlib', ':wechatlib'
 rootProject.name='Aehearsal Ground'

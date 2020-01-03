@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">微信工具库</string>
+
+    <!-- 微信回调反馈自定义提示语 -->
+    <string name="wx_err_ok">操作成功</string>
+    <string name="wx_err_user_cancel">操作已取消</string>
+    <string name="wx_err_auth_denied">未授权</string>
+    <string name="wx_err_unsupport">微信版本不支持此操作</string>
+    <string name="wx_err_unknown">微信未知错误</string>
+</resources>

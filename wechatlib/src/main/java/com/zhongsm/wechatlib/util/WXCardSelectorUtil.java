@@ -1,4 +1,4 @@
-package com.zhongsm.commlib.utils;
+package com.zhongsm.wechatlib.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,10 +9,13 @@ import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbiz.ChooseCardFromWXCardPackage;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.zhongsm.commlib.BuildConfig;
-import com.zhongsm.commlib.bean.WXInvoiceEvent;
+import com.zhongsm.wechatlib.BuildConfig;
+import com.zhongsm.wechatlib.bean.WXInvoiceEvent;
 import com.zhongsm.commlib.constant.ServiceCode;
 import com.zhongsm.commlib.constant.SharedPreferenceKey;
+import com.zhongsm.commlib.utils.LogUtil;
+import com.zhongsm.commlib.utils.SharedPreferenceUtil;
+import com.zhongsm.commlib.utils.StringUtil;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -41,7 +44,7 @@ import okhttp3.Response;
 public abstract class WXCardSelectorUtil {
     private static final String TAG = WXCardSelectorUtil.class.getSimpleName();
 
-    protected static Context mContext;
+    private Context mContext;
 
     private String accessToken;
     private String apiTicket;
@@ -50,7 +53,7 @@ public abstract class WXCardSelectorUtil {
 
     public abstract void onReceiveData(WXInvoiceEvent event);
 
-    public WXCardSelectorUtil(Context context) {
+    protected WXCardSelectorUtil(Context context) {
         // 注册EventBus
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);

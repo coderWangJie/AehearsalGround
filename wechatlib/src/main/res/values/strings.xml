@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WeChatLib</string>
+
+    <string name="wx_err_ok">wx_err_ok</string>
+    <string name="wx_err_user_cancel">wx_err_user_cancel</string>
+    <string name="wx_err_auth_denied">wx_err_auth_denied</string>
+    <string name="wx_err_unsupport">wx_err_unsupport</string>
+    <string name="wx_err_unknown">wx_err_unknown</string>
+</resources>

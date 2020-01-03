@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.zhongsm.commlib.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    /** 日志TAG  */
+    protected static String TAG;
 
     /**
      * 设置Activity页面资源
@@ -22,6 +24,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TAG = getClass().getSimpleName();
 
         // 设置页面
         setContentView(getLayoutResource() > 0 ? getLayoutResource() : R.layout.layout_activity_not_set);

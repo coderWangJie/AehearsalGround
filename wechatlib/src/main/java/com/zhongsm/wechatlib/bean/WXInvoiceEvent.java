@@ -1,5 +1,6 @@
-package com.zhongsm.commlib.bean;
+package com.zhongsm.wechatlib.bean;
 
+import com.zhongsm.commlib.bean.BaseVO;
 import com.zhongsm.commlib.utils.LogUtil;
 import com.zhongsm.commlib.utils.StringUtil;
 

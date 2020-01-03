@@ -1,14 +1,12 @@
 package com.zhongsm.aehearsal;
 
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.zhongsm.commlib.android.BaseActivity;
-import com.zhongsm.commlib.bean.WXInvoiceEvent;
+import com.zhongsm.wechatlib.bean.WXInvoiceEvent;
 import com.zhongsm.commlib.constant.ServiceCode;
 import com.zhongsm.commlib.utils.LogUtil;
-import com.zhongsm.commlib.utils.WXCardSelectorUtil;
+import com.zhongsm.wechatlib.util.WXCardSelectorUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -17,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -25,10 +25,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity {
     private static long lastBackPressTime;
-
-    private Button btnGetWeChatCard;
 
     @Override
     protected int getLayoutResource() {
@@ -37,9 +35,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void runOnCreate() {
-        btnGetWeChatCard = findViewById(R.id.btn_wxCard);
-
-        btnGetWeChatCard.setOnClickListener(this);
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -47,30 +43,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_wxCard:
-                WXCardSelectorUtil util = new WXCardSelectorUtil(this) {
-                    @Override
-                    public void onReceiveData(WXInvoiceEvent event) {
-                        LogUtil.d("WangJ", "" + event.getInvoiceString());
+    /** 微信发票工具类，一个UI中应该只存在一个，否则会因为EventBus出发多次 */
+    private WXCardSelectorUtil wxCardSelectorUtil;
 
-                        getInvoiceInfo(event);
-                    }
-                };
-                util.execute();
-                break;
+    @OnClick(R.id.btn_wxCard)
+    protected void ChooseInvoice() {
+        if (wxCardSelectorUtil == null) {
+            wxCardSelectorUtil = new WXCardSelectorUtil(this) {
+                @Override
+                public void onReceiveData(WXInvoiceEvent event) {
+                    LogUtil.d("WangJ", "" + event.getInvoiceString());
+
+                    getInvoiceInfo(event);
+                }
+            };
         }
+        wxCardSelectorUtil.execute();
     }
 
     private void getInvoiceInfo(WXInvoiceEvent event) {
         try {
-            JSONObject jsonObject = (JSONObject) new JSONArray(event.getCardItemList()).get(0);
+            JSONArray array = new JSONArray(event.getCardItemList());
+            if (array.length() <= 0) {
+                LogUtil.e("WangJ", "WXInvoiceEvent's CardList size is 0");
+                return;
+            }
 
-
+            JSONObject jsonObject = (JSONObject) array.get(0);
             RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.parse("application/json; charset=utf-8"));
-
             Request request = new Request.Builder()
                     .url(String.format(ServiceCode.WX_INVOICE_INFO_SINGLE, event.getAccessToken()))
                     .post(body)
@@ -90,8 +90,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             });
         } catch (JSONException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, e.getMessage());
         }
+
     }
 
     @Override
@@ -103,5 +104,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        wxCardSelectorUtil = null;
     }
 }

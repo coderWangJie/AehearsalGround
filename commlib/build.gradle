@@ -32,9 +32,9 @@ android {
         pro {
 
         }
+
         productFlavors.all {
-            buildConfigField("String", "WX_APP_ID", "\"${wx_APP_ID}\"")
-            buildConfigField("String", "WX_APP_SECRECT", "\"${wx_APP_Secret}\"")
+
         }
     }
 
@@ -43,14 +43,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     // OkHttp
     api 'com.squareup.okhttp3:okhttp:4.2.1'
     // EventBus
     api 'org.greenrobot:eventbus:3.1.1'
     // Apache Commons Codec
     api 'commons-codec:commons-codec:1.13'
-    // 微信SDK
-    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
-//    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'   // 此写法不推荐
 }
