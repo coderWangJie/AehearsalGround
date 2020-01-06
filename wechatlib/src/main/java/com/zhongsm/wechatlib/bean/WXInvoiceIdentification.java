@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class WXInvoiceEvent extends BaseVO {
+public class WXInvoiceIdentification extends BaseVO {
     /**
      * 获取到的微信accessToken，后台获取微信卡券（发票）详情时需要此值
      */
