@@ -8,10 +8,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhongsm.commlib.R;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public abstract class BaseActivity extends AppCompatActivity {
     /** 日志TAG  */
     protected static String TAG;
 
+
+private Unbinder unbinder;
     /**
      * 设置Activity页面资源
      */
@@ -29,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // 设置页面
         setContentView(getLayoutResource() > 0 ? getLayoutResource() : R.layout.layout_activity_not_set);
+        unbinder = ButterKnife.bind(this);
 
         runOnCreate();
     }
@@ -58,6 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
