@@ -52,7 +52,7 @@ public abstract class WXCardSelectorUtil {
     private OkHttpClient mOkHttpClient;
 
     /**
-     * ？
+     * 获取到微信发票初级数据到回调
      * @param event
      */
     public abstract void onReceiveData(WXInvoiceIdentification event);
@@ -74,7 +74,7 @@ public abstract class WXCardSelectorUtil {
         apiTicket = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_API_TICKET_s);
         String timestamp = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_TOKEN_TIMESTAMP_s, "0");
 
-        // 如果上次accessToken、apiTicket在有效期内，可直接使用
+        // 如果上次accessToken、apiTicket在有效期(72小时)内，可直接使用
         if (StringUtil.isNotEmpty(accessToken)
                 && StringUtil.isNotEmpty(apiTicket)
                 && System.currentTimeMillis() - Long.parseLong(timestamp) < 1000 * 7200) {
@@ -212,7 +212,7 @@ public abstract class WXCardSelectorUtil {
     }
 
     @Subscribe
-    public void onReceiverWX(WXInvoiceIdentification event) {
+    public void handlWXEntry(WXInvoiceIdentification event) {
         //
         event.setAccessToken(accessToken);
         onReceiveData(event);
