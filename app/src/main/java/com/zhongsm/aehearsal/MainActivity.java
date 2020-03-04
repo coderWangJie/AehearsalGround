@@ -3,9 +3,9 @@ package com.zhongsm.aehearsal;
 import android.widget.Toast;
 
 import com.zhongsm.commlib.android.BaseActivity;
-import com.zhongsm.wechatlib.bean.WXInvoiceEvent;
 import com.zhongsm.commlib.constant.ServiceCode;
 import com.zhongsm.commlib.utils.LogUtil;
+import com.zhongsm.wechatlib.bean.WXInvoiceIdentification;
 import com.zhongsm.wechatlib.util.WXCardSelectorUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,7 +49,7 @@ public class MainActivity extends BaseActivity {
         if (wxCardSelectorUtil == null) {
             wxCardSelectorUtil = new WXCardSelectorUtil(this) {
                 @Override
-                public void onReceiveData(WXInvoiceEvent event) {
+                public void onReceiveData(WXInvoiceIdentification event) {
                     LogUtil.d("WangJ", "" + event.getInvoiceString());
 
                     getInvoiceInfo(event);
@@ -60,7 +59,7 @@ public class MainActivity extends BaseActivity {
         wxCardSelectorUtil.execute();
     }
 
-    private void getInvoiceInfo(WXInvoiceEvent event) {
+    private void getInvoiceInfo(WXInvoiceIdentification event) {
         try {
             JSONArray array = new JSONArray(event.getCardItemList());
             if (array.length() <= 0) {
