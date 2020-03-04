@@ -9,18 +9,18 @@ import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbiz.ChooseCardFromWXCardPackage;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.zhongsm.wechatlib.BuildConfig;
-import com.zhongsm.wechatlib.bean.WXInvoiceEvent;
 import com.zhongsm.commlib.constant.ServiceCode;
 import com.zhongsm.commlib.constant.SharedPreferenceKey;
 import com.zhongsm.commlib.utils.LogUtil;
 import com.zhongsm.commlib.utils.SharedPreferenceUtil;
 import com.zhongsm.commlib.utils.StringUtil;
+import com.zhongsm.wechatlib.BuildConfig;
+import com.zhongsm.wechatlib.bean.WXInvoiceIdentification;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +51,11 @@ public abstract class WXCardSelectorUtil {
 
     private OkHttpClient mOkHttpClient;
 
-    public abstract void onReceiveData(WXInvoiceEvent event);
+    /**
+     * 获取到微信发票初级数据到回调
+     * @param event
+     */
+    public abstract void onReceiveData(WXInvoiceIdentification event);
 
     protected WXCardSelectorUtil(Context context) {
         // 注册EventBus
@@ -62,12 +66,15 @@ public abstract class WXCardSelectorUtil {
         mOkHttpClient = new OkHttpClient();
     }
 
+    /**
+     * 执行拉取微信票券流程
+     */
     public void execute() {
         accessToken = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_ACCESS_TOKEN_s);
         apiTicket = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_API_TICKET_s);
         String timestamp = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_TOKEN_TIMESTAMP_s, "0");
 
-        // 如果上次accessToken、apiTicket在有效期内，可直接使用
+        // 如果上次accessToken、apiTicket在有效期(72小时)内，可直接使用
         if (StringUtil.isNotEmpty(accessToken)
                 && StringUtil.isNotEmpty(apiTicket)
                 && System.currentTimeMillis() - Long.parseLong(timestamp) < 1000 * 7200) {
@@ -90,12 +97,12 @@ public abstract class WXCardSelectorUtil {
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 LogUtil.d(TAG, e.getMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String respBody = response.body().string();
                 LogUtil.d(TAG, respBody);
 
@@ -127,12 +134,12 @@ public abstract class WXCardSelectorUtil {
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 LogUtil.d(TAG, e.getMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String respBody = response.body().string();
                 LogUtil.d(TAG, respBody);
 
@@ -180,7 +187,7 @@ public abstract class WXCardSelectorUtil {
         req.canMultiSelect = "true";     // 是否支持多选
         req.locationId = "";   // ??
 
-        // api_ticket、appid、location_id、timestamp、nonce_str、card_id、card_type
+        // 加密元素api_ticket、appid、location_id、timestamp、nonce_str、card_id、card_type
         List<String> list = new ArrayList<>();
         list.add(apiTicket);
         list.add(req.appId);
@@ -204,8 +211,8 @@ public abstract class WXCardSelectorUtil {
         api.sendReq(req);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceiverWX(WXInvoiceEvent event) {
+    @Subscribe
+    public void handlWXEntry(WXInvoiceIdentification event) {
         //
         event.setAccessToken(accessToken);
         onReceiveData(event);
@@ -213,7 +220,7 @@ public abstract class WXCardSelectorUtil {
 
     @Override
     protected void finalize() throws Throwable {
-        EventBus.getDefault().unregister(this);
         super.finalize();
+        EventBus.getDefault().unregister(this);
     }
 }

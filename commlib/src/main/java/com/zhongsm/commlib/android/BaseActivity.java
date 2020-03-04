@@ -15,7 +15,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /** 日志TAG  */
     protected static String TAG;
 
-    protected Unbinder unbinder;
+    private Unbinder unbinder;
 
 
     /**
@@ -37,7 +37,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutResource() > 0 ? getLayoutResource() : R.layout.layout_activity_not_set);
 
         unbinder = ButterKnife.bind(this);
-
 
         runOnCreate();
     }

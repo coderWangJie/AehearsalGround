@@ -54,4 +54,6 @@ dependencies {
     api 'org.greenrobot:eventbus:3.1.1'
     // Apache Commons Codec
     api 'commons-codec:commons-codec:1.13'
+    // Butter Knife
+    api 'com.jakewharton:butterknife:10.2.1'
 }

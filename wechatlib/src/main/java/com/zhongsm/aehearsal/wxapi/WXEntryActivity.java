@@ -16,7 +16,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zhongsm.commlib.utils.LogUtil;
 import com.zhongsm.wechatlib.BuildConfig;
 import com.zhongsm.wechatlib.R;
-import com.zhongsm.wechatlib.bean.WXInvoiceEvent;
+import com.zhongsm.wechatlib.bean.WXInvoiceIdentification;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -106,7 +106,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         if (resp.getType() == ConstantsAPI.COMMAND_CHOOSE_CARD_FROM_EX_CARD_PACKAGE) {
             ChooseCardFromWXCardPackage.Resp chooseResp = (ChooseCardFromWXCardPackage.Resp) resp;
 
-            WXInvoiceEvent event = new WXInvoiceEvent();
+            WXInvoiceIdentification event = new WXInvoiceIdentification();
             event.setStatus(BaseResp.ErrCode.ERR_OK == chooseResp.errCode ? "success" : "fail");
             event.setCardItemList(chooseResp.cardItemList);
 
