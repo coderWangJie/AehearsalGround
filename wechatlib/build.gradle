@@ -12,12 +12,14 @@ android {
         versionName "1.0"
 
         flavorDimensions "default"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -46,10 +48,12 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
-    // 微信SDK
-    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
-//    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'   // 此写法不推荐
-
     // 基础库
     implementation project(path: ':commlib')
+
+    // 微信SDK
+    api WeChat_SDK_without_mta
+
+    // Butter Knife注解处理
+    annotationProcessor JakeWharton_ButterKnifeCompiler
 }
