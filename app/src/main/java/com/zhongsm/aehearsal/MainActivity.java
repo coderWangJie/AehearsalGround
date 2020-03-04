@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity {
                     .url(String.format(ServiceCode.WX_INVOICE_INFO_SINGLE, event.getAccessToken()))
                     .post(body)
                     .build();
+
             Call call = new OkHttpClient().newCall(request);
             call.enqueue(new Callback() {
                 @Override
