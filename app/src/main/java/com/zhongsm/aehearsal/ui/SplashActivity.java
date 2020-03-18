@@ -1,10 +1,12 @@
-package com.zhongsm.aehearsal;
+package com.zhongsm.aehearsal.ui;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.TextView;
 
+import com.zhongsm.aehearsal.BuildConfig;
+import com.zhongsm.aehearsal.R;
 import com.zhongsm.commlib.android.BaseActivity;
 import com.zhongsm.commlib.utils.AppVersionUtil;
 import com.zhongsm.commlib.utils.LogUtil;
@@ -14,6 +16,9 @@ import butterknife.OnClick;
 
 public class SplashActivity extends BaseActivity {
 
+    /**
+     * Splash页面倒计时时长
+     */
     private int delaySecond = 5;
     private MyHandler handler;
     private int msgWhat = 0;

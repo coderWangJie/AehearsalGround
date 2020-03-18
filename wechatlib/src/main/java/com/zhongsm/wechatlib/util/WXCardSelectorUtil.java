@@ -39,37 +39,58 @@ import okhttp3.Response;
  * 拉取微信发票插件
  * 从微信发票夹多选发票，将发票信息回调给每刻H5页面，供后续获取发票详细信息使用
  *
- * @author WangJ 2019-12-30
+ * @author WangJ 2020-03-17
  */
-public abstract class WXCardSelectorUtil {
+public class WXCardSelectorUtil {
     private static final String TAG = WXCardSelectorUtil.class.getSimpleName();
 
-    private Context mContext;
+    private static WXCardSelectorUtil instance;
 
     private String accessToken;
     private String apiTicket;
 
     private OkHttpClient mOkHttpClient;
+    private WXInvoiceEventListener wxInvoiceEventListener;
 
     /**
-     * 获取到微信发票初级数据到回调
-     * @param event
+     * 获取到微信发票标识数据回调
      */
-    public abstract void onReceiveData(WXInvoiceIdentification event);
+    public interface WXInvoiceEventListener {
+        void onReceiveEvent(WXInvoiceIdentification event);
+    }
 
-    protected WXCardSelectorUtil(Context context) {
+    private WXCardSelectorUtil() {
         // 注册EventBus
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        mContext = context;
         mOkHttpClient = new OkHttpClient();
+    }
+
+    public static WXCardSelectorUtil getInstance() {
+        if (instance == null) {
+            instance = new WXCardSelectorUtil();
+        }
+
+        return instance;
     }
 
     /**
      * 执行拉取微信票券流程
      */
-    public void execute() {
+    public void execute(Context context, WXInvoiceEventListener listener) {
+        if (context == null) {
+            LogUtil.e(TAG, "Context can't be null on method execute() ");
+            return;
+        }
+
+        if (listener == null) {
+            LogUtil.e(TAG, "WXInvoiceEventListener can't be null");
+            return;
+        }
+
+        wxInvoiceEventListener = listener;
+
         accessToken = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_ACCESS_TOKEN_s);
         apiTicket = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_API_TICKET_s);
         String timestamp = SharedPreferenceUtil.getInfoFromShared(SharedPreferenceKey.EXPENSE_WX_TOKEN_TIMESTAMP_s, "0");
@@ -78,9 +99,9 @@ public abstract class WXCardSelectorUtil {
         if (StringUtil.isNotEmpty(accessToken)
                 && StringUtil.isNotEmpty(apiTicket)
                 && System.currentTimeMillis() - Long.parseLong(timestamp) < 1000 * 7200) {
-            choose(apiTicket);
+            callWXtoChoose(context, apiTicket);
         } else {
-            getAccessToken(BuildConfig.WX_APP_ID, BuildConfig.WX_APP_SECRECT);
+            getAccessToken(context.getApplicationContext(), BuildConfig.WX_APP_ID, BuildConfig.WX_APP_SECRECT);
         }
     }
 
@@ -90,7 +111,7 @@ public abstract class WXCardSelectorUtil {
      * @param appId     微信AppID
      * @param appSecret 微信AppSecret
      */
-    private void getAccessToken(String appId, String appSecret) {
+    private void getAccessToken(final Context context, String appId, String appSecret) {
         Request request = new Request.Builder()
                 .url(String.format(ServiceCode.WX_CARD_ACCESS_TOKEN, appId, appSecret))
                 .build();
@@ -114,7 +135,7 @@ public abstract class WXCardSelectorUtil {
                     SharedPreferenceUtil.setInfoToShared(SharedPreferenceKey.EXPENSE_WX_TOKEN_TIMESTAMP_s,
                             String.valueOf(System.currentTimeMillis()));
 
-                    getApiTicket(accessToken);
+                    getApiTicket(context, accessToken);
                 } catch (JSONException e) {
                     LogUtil.e(TAG, e.getMessage());
                 }
@@ -127,7 +148,7 @@ public abstract class WXCardSelectorUtil {
      *
      * @param token 上一步获取的 accessToken
      */
-    private void getApiTicket(String token) {
+    private void getApiTicket(final Context context, String token) {
         Request request = new Request.Builder()
                 .url(String.format(ServiceCode.WX_CARD_API_TICKET, token))
                 .build();
@@ -149,7 +170,7 @@ public abstract class WXCardSelectorUtil {
                     // 本地记录apiTicket
                     SharedPreferenceUtil.setInfoToShared(SharedPreferenceKey.EXPENSE_WX_API_TICKET_s, apiTicket);
 
-                    choose(apiTicket);
+                    callWXtoChoose(context, apiTicket);
                 } catch (JSONException e) {
                     LogUtil.d(TAG, e.getMessage());
                 }
@@ -162,12 +183,12 @@ public abstract class WXCardSelectorUtil {
      *
      * @param apiTicket 上一步获取的 apiTicket
      */
-    private void choose(String apiTicket) {
-        final IWXAPI api = WXAPIFactory.createWXAPI(mContext, BuildConfig.WX_APP_ID, true);
+    private void callWXtoChoose(Context context, String apiTicket) {
+        final IWXAPI api = WXAPIFactory.createWXAPI(context, BuildConfig.WX_APP_ID, true);
         // 将应用的appId注册到微信
         api.registerApp(BuildConfig.WX_APP_ID);
         //建议动态监听微信启动广播进行注册到微信
-        mContext.registerReceiver(new BroadcastReceiver() {
+        context.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // 将该app注册到微信
@@ -184,7 +205,7 @@ public abstract class WXCardSelectorUtil {
         // 可选字段
         req.cardType = "INVOICE";   // "INVOICE"-发票夹；
         req.cardId = "";   // 卡券ID，有值时拉取对应卡券，为空时拉取所有卡券
-        req.canMultiSelect = "true";     // 是否支持多选
+        req.canMultiSelect = "1";     // 是否支持多选
         req.locationId = "";   // ??
 
         // 加密元素api_ticket、appid、location_id、timestamp、nonce_str、card_id、card_type
@@ -213,9 +234,10 @@ public abstract class WXCardSelectorUtil {
 
     @Subscribe
     public void handlWXEntry(WXInvoiceIdentification event) {
-        //
+        // 添加这个值是财资和每刻报销方案中的做法，Demo中无业务作用
         event.setAccessToken(accessToken);
-        onReceiveData(event);
+
+        wxInvoiceEventListener.onReceiveEvent(event);
     }
 
     @Override

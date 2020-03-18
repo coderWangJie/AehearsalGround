@@ -44,16 +44,25 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    // RecyclerView控件
+    api AndroidX_RecyclerView
+
     // ButterKnife公共依赖
     api JakeWharton_ButterKnife
+
     // OkHttp
-    api 'com.squareup.okhttp3:okhttp:4.2.1'
+    api Squareup_OkHttp3
+
     // EventBus
-    api 'org.greenrobot:eventbus:3.1.1'
-    // Apache Commons Codec
-    api 'commons-codec:commons-codec:1.13'
-    // Butter Knife
-    api 'com.jakewharton:butterknife:10.2.1'
+    api GreenRobot_EventBus
+
+    // Apache Commons Codec编解码
+    api Apache_Commons_Codec
+
+    // 图片加载工具
+    api Bumptech_Gide
+
+    // Alibaba FastJson
+    api Alibaba_FastJson
 }

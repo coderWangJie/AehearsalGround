@@ -1,26 +1,24 @@
 package com.zhongsm.aehearsal;
 
+import android.app.Application;
 import android.util.Log;
 
 import com.zhongsm.commlib.android.BaseApplication;
+import com.zhongsm.commlib.utils.LogUtil;
 
 /**
  * 项目Application
  * @author WangJ 2019-12-26
  */
-public class AppApplication extends BaseApplication {
+public class AppApplication extends Application {
     private static final String TAG = AppApplication.class.getSimpleName();
-
-    @Override
-    public void init() {
-
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.e(TAG, "Application onCreate");
 
+        LogUtil.setLogLevel(Log.DEBUG);
 
     }
 

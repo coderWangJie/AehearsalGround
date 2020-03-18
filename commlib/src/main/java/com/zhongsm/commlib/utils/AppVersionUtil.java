@@ -9,21 +9,22 @@ public class AppVersionUtil {
 
     /**
      * 获取APP版本号
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return app build.gradle中设置等versionName
      */
     public static String getVersionName(Context context) {
-        String var1 = "";
+        String versionName = "";
 
         try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
+            PackageInfo packageInfo = context.getApplicationContext().getPackageManager()
+                    .getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
             if (packageInfo != null) {
-                var1 = packageInfo.versionName;
+                versionName = packageInfo.versionName;
             }
         } catch (PackageManager.NameNotFoundException e) {
             LogUtil.e(TAG, "获取版本号失败：" + e.getMessage());
         }
 
-        return var1;
+        return versionName;
     }
 }
