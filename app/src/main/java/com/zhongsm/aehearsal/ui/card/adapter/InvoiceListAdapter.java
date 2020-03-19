@@ -1,6 +1,5 @@
 package com.zhongsm.aehearsal.ui.card.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +23,13 @@ import java.util.Locale;
  */
 public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.InvoiceItemHolder> {
 
-    private Context context;
     private List<InvoiceDetail> list;
 
     private Date date;
     private DecimalFormat format;
     private SimpleDateFormat dateFormat;
 
-    public InvoiceListAdapter(Context context) {
-        this.context = context;
+    public InvoiceListAdapter() {
         this.list = new ArrayList<>();
 
         date = new Date();
@@ -40,12 +37,20 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
         dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     }
 
+    /**
+     * 设置列表数据
+     * @param newList 新数据
+     */
     public void setList(List<InvoiceDetail> newList) {
         list.clear();
         list.addAll(newList);
         notifyDataSetChanged();
     }
 
+    /**
+     * 增加列表数据
+     * @param subList 要添加的数据
+     */
     public void addList(List<InvoiceDetail> subList) {
         list.addAll(subList);
         notifyDataSetChanged();
@@ -54,7 +59,7 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
     @NonNull
     @Override
     public InvoiceItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_invoice, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invoice, null);
         return new InvoiceItemHolder(view);
     }
 
@@ -101,7 +106,7 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
     }
 
     /**
-     *
+     * 发票列表Item ViewHolder
      */
     class InvoiceItemHolder extends RecyclerView.ViewHolder {
 

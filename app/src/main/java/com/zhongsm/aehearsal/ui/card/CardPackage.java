@@ -53,7 +53,7 @@ public class CardPackage extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new InvoiceListAdapter(CardPackage.this);
+        adapter = new InvoiceListAdapter();
         recyclerView.setAdapter(adapter);
 
         WXCardSelectorUtil.getInstance().execute(this, new WXCardSelectorUtil.WXInvoiceEventListener() {
