@@ -29,12 +29,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void runOnCreate() {
-
+        Glide.with(this).load(Constant.imgResourceUrl).into(ivTest);
     }
 
     @Override
     protected void runOnResume() {
-        Glide.with(this).load(Constant.imgResourceUrl).into(ivTest);
     }
 
     @OnClick(R.id.btn_wxCard)
@@ -46,7 +45,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         long newBackPressTime = System.currentTimeMillis();
-        if (newBackPressTime - lastBackPressTime > 1000) {
+        if (newBackPressTime - lastBackPressTime > 2000) {
             lastBackPressTime = newBackPressTime;
             Toast.makeText(this, R.string.hint_double_click_to_quit, Toast.LENGTH_SHORT).show();
         } else {

@@ -1,2 +1,3 @@
+include ':ResourcesLib'
 include ':app', ':commlib', ':wechatlib'
 rootProject.name='Aehearsal Ground'

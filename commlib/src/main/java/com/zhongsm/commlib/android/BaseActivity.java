@@ -11,6 +11,13 @@ import com.zhongsm.commlib.R;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * Activity 基类
+ *
+ * @author WangJ
+ * @since 2020/6/30
+ * @version 0.1
+ */
 public abstract class BaseActivity extends AppCompatActivity {
     /** 日志TAG  */
     protected static String TAG;

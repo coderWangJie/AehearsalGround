@@ -59,7 +59,7 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
     @NonNull
     @Override
     public InvoiceItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invoice, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invoice, parent, false);
         return new InvoiceItemHolder(view);
     }
 
@@ -108,7 +108,7 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
     /**
      * 发票列表Item ViewHolder
      */
-    class InvoiceItemHolder extends RecyclerView.ViewHolder {
+    static class InvoiceItemHolder extends RecyclerView.ViewHolder {
 
         TextView tvCompanyName;
         TextView tvNumber;
